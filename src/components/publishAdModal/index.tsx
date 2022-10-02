@@ -1,7 +1,39 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { GameController } from "phosphor-react";
+import { useState } from "react";
+import { Game } from "../../interfaces/Game";
 
-function PublishAdModal() {
+interface Props {
+   data: Game[];
+}
+
+function PublishAdModal({ data }: Props) {
+   const [name, setName] = useState<string>();
+   const [game, setGame] = useState<string>("");
+   const [yearsOfPlaying, setYearsOfPlaying] = useState<number>(0);
+   const [discordUsername, setDiscordUsername] = useState<string>("");
+   const [weekdaysPlayed, setWeekdaysPlayed] = useState<string[]>([]);
+   const [weekdayActive, setWeekDayActive] = useState<boolean>(false);
+   function handleWeekDaysPlayed(ev: any) {
+      const weekday = ev.target.dataset.value;
+
+      if (!weekdaysPlayed.includes(weekday)) {
+         setWeekDayActive(true);
+         setWeekdaysPlayed([...weekdaysPlayed, weekday]);
+      } else {
+         setWeekDayActive(false);
+         const weekdayArrayPosition = weekdaysPlayed.indexOf(weekday);
+         weekdaysPlayed.splice(weekdayArrayPosition, 1);
+      }
+   }
+   const payload = {
+      name,
+      game,
+      yearsOfPlaying,
+      discordUsername,
+      weekdaysPlayed,
+   };
+   console.log(payload);
    return (
       <Dialog.Portal>
          <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -17,8 +49,15 @@ function PublishAdModal() {
                      id="gameName"
                      className="bg-zinc-900 p-3 text-zinc-500 rounded-md"
                      placeholder="Selecione o jogo que deseja jogar"
+                     onChange={(e) => setGame(e.target.value)}
                   >
-                     <option>Map option</option>
+                     {data.map((game) => {
+                        return (
+                           <option key={game.id} value={game.id}>
+                              {game.title}
+                           </option>
+                        );
+                     })}
                   </select>
                </div>
                <div className="flex flex-col gap-2">
@@ -27,6 +66,8 @@ function PublishAdModal() {
                      id="name"
                      className="bg-zinc-900 p-3 text-zinc-500 rounded-md"
                      placeholder="Como te chamam dentro do game?"
+                     value={name}
+                     onChange={(e) => setName(e.target.value)}
                   />
                </div>
                <div className="flex flex-row gap-4 ">
@@ -36,18 +77,22 @@ function PublishAdModal() {
                      </label>
                      <input
                         id="yearsOfPlaying"
-                        className="bg-zinc-900 p-3 text-zinc-500 rounded-md"
+                        className={`bg-zinc-900 p-3 text-zinc-500 rounded-md  `}
                         placeholder="Tudo bem ser ZERO"
+                        value={yearsOfPlaying}
+                        onChange={(e) =>
+                           setYearsOfPlaying(Number(e.target.value))
+                        }
                      />
                   </div>
                   <div className="flex flex-col gap-2 w-[50%] min-w-[20%]">
-                     <label htmlFor="yearsOfPlaying">
-                        Joga há quantos anos?
-                     </label>
+                     <label htmlFor="yearsOfPlaying">Qual seu discord?</label>
                      <input
                         id="yearsOfPlaying"
                         className="bg-zinc-900 p-3 text-zinc-500 rounded-md"
                         placeholder="Tudo bem ser ZERO"
+                        value={discordUsername}
+                        onChange={(e) => setDiscordUsername(e.target.value)}
                      />
                   </div>
                </div>
@@ -57,19 +102,61 @@ function PublishAdModal() {
                         Quando costuma jogar?
                      </label>
                      <div className="flex gap-1">
-                        <div className="flex items-center justify-center text-white bg-zinc-900 w-10 h-10 rounded-md">
+                        <div
+                           data-value={"monday"}
+                           onClick={handleWeekDaysPlayed}
+                           className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
+                              weekdaysPlayed.includes("monday")
+                                 ? "bg-violet-500"
+                                 : "bg-zinc-900"
+                           } hover:cursor-pointer hover:bg-zinc-400`}
+                           placeholder="S"
+                        >
                            S
                         </div>
-                        <div className="flex items-center justify-center text-white bg-zinc-900 w-10 h-10 rounded-md">
+
+                        <div
+                           data-value={"tuesday"}
+                           onClick={handleWeekDaysPlayed}
+                           className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
+                              weekdaysPlayed.includes("tuesday")
+                                 ? "bg-violet-500"
+                                 : "bg-zinc-900"
+                           } hover:cursor-pointer hover:bg-zinc-400`}
+                        >
                            T
                         </div>
-                        <div className="flex items-center justify-center text-white bg-zinc-900 w-10 h-10 rounded-md">
+                        <div
+                           data-value={"wednesday"}
+                           onClick={handleWeekDaysPlayed}
+                           className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
+                              weekdaysPlayed.includes("wednesday")
+                                 ? "bg-violet-500"
+                                 : "bg-zinc-900"
+                           } hover:cursor-pointer hover:bg-zinc-400`}
+                        >
                            Q
                         </div>
-                        <div className="flex items-center justify-center text-white bg-zinc-900 w-10 h-10 rounded-md">
+                        <div
+                           data-value={"thursday"}
+                           onClick={handleWeekDaysPlayed}
+                           className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
+                              weekdaysPlayed.includes("thursday")
+                                 ? "bg-violet-500"
+                                 : "bg-zinc-900"
+                           } hover:cursor-pointer hover:bg-zinc-400`}
+                        >
                            Q
                         </div>
-                        <div className="flex items-center justify-center text-white bg-zinc-900 w-10 h-10 rounded-md">
+                        <div
+                           data-value={"friday"}
+                           onClick={handleWeekDaysPlayed}
+                           className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
+                              weekdaysPlayed.includes("friday")
+                                 ? "bg-violet-500"
+                                 : "bg-zinc-900"
+                           } hover:cursor-pointer hover:bg-zinc-400`}
+                        >
                            S
                         </div>
                      </div>
@@ -101,7 +188,7 @@ function PublishAdModal() {
                <div className="flex items-center gap-2 font-normal text-[14px] ">
                   <input
                      type="checkbox"
-                     className="w-6 h-6 text-green bg-zinc-500 rounded-[4px] rounded-md"
+                     className="w-6 h-6 text-green bg-zinc-500 rounded-md"
                   />
                   <label>Costumo me conectar ao chat de voz</label>
                </div>

@@ -5,12 +5,8 @@ import GameCarousel from "./components/gamecarousel";
 import PublishAdModal from "./components/publishAdModal";
 import * as Dialog from "@radix-ui/react-dialog";
 import PublishAd from "./components/publishAd";
+import { Game } from "./interfaces/Game";
 
-interface Game {
-   id: string;
-   title: string;
-   bannerURL: string;
-}
 function App() {
    const [games, setGames] = useState<Game[]>([]);
 
@@ -40,7 +36,7 @@ function App() {
          <GameCarousel data={games} />
          <Dialog.Root>
             <PublishAd />
-            <PublishAdModal />
+            <PublishAdModal data={games} />
          </Dialog.Root>
       </div>
    );
