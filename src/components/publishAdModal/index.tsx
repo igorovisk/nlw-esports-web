@@ -13,17 +13,19 @@ function PublishAdModal({ data }: Props) {
    const [yearsOfPlaying, setYearsOfPlaying] = useState<number>(0);
    const [discordUsername, setDiscordUsername] = useState<string>("");
    const [weekdaysPlayed, setWeekdaysPlayed] = useState<string[]>([]);
-   const [weekdayActive, setWeekDayActive] = useState<boolean>(false);
-   function handleWeekDaysPlayed(ev: any) {
-      const weekday = ev.target.dataset.value;
+   let arr = [1, 2, 3, 4, 5];
 
-      if (!weekdaysPlayed.includes(weekday)) {
-         setWeekDayActive(true);
-         setWeekdaysPlayed([...weekdaysPlayed, weekday]);
+   function handleWeekDaysPlayed(ev: any) {
+      const weekdayInput = ev.target.dataset.value;
+
+      if (!weekdaysPlayed.includes(weekdayInput)) {
+         setWeekdaysPlayed([...weekdaysPlayed, weekdayInput]);
       } else {
-         setWeekDayActive(false);
-         const weekdayArrayPosition = weekdaysPlayed.indexOf(weekday);
-         weekdaysPlayed.splice(weekdayArrayPosition, 1);
+         const updatedArray = weekdaysPlayed.filter((weekday) => {
+            return weekday != weekdayInput;
+         });
+
+         setWeekdaysPlayed(updatedArray);
       }
    }
    const payload = {
@@ -33,7 +35,6 @@ function PublishAdModal({ data }: Props) {
       discordUsername,
       weekdaysPlayed,
    };
-   console.log(payload);
    return (
       <Dialog.Portal>
          <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -117,7 +118,7 @@ function PublishAdModal({ data }: Props) {
 
                         <div
                            data-value={"tuesday"}
-                           onClick={handleWeekDaysPlayed}
+                           onClick={(ev) => handleWeekDaysPlayed(ev)}
                            className={`flex items-center justify-center text-white  w-10 h-10 rounded-md  ${
                               weekdaysPlayed.includes("tuesday")
                                  ? "bg-violet-500"
