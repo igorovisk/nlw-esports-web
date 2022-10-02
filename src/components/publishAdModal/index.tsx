@@ -8,16 +8,18 @@ interface Props {
 }
 
 function PublishAdModal({ data }: Props) {
-   const [name, setName] = useState<string>();
-   const [game, setGame] = useState<string>("");
+   const [name, setName] = useState<string>("");
+   const [game, setGame] = useState<string>(data[0].id);
    const [yearsOfPlaying, setYearsOfPlaying] = useState<number>(0);
    const [discordUsername, setDiscordUsername] = useState<string>("");
    const [weekdaysPlayed, setWeekdaysPlayed] = useState<string[]>([]);
-   let arr = [1, 2, 3, 4, 5];
+   const [startHour, setStartHour] = useState<number>(0);
+   const [endHour, setEndHour] = useState<number>(0);
+   const [usesVoiceChat, setUsesVoiceChat] = useState<boolean>(false);
 
+   console.log(data[0].id, "data");
    function handleWeekDaysPlayed(ev: any) {
       const weekdayInput = ev.target.dataset.value;
-
       if (!weekdaysPlayed.includes(weekdayInput)) {
          setWeekdaysPlayed([...weekdaysPlayed, weekdayInput]);
       } else {
@@ -34,7 +36,15 @@ function PublishAdModal({ data }: Props) {
       yearsOfPlaying,
       discordUsername,
       weekdaysPlayed,
+      startHour,
+      endHour,
+      usesVoiceChat,
    };
+   console.log(payload, payload);
+   function handleSubmit(ev) {
+      ev.preventDefault();
+      console.log(payload);
+   }
    return (
       <Dialog.Portal>
          <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -43,7 +53,10 @@ function PublishAdModal({ data }: Props) {
                Publique um anúncio
             </Dialog.Title>
 
-            <form className="flex flex-col py-3 gap-4 w-[488] justify-center align-middle ">
+            <form
+               className="flex flex-col py-3 gap-4 w-[488] justify-center align-middle"
+               onSubmit={handleSubmit}
+            >
                <div className="flex flex-col gap-2">
                   <label htmlFor="gameName">Qual o game?</label>
                   <select
@@ -80,6 +93,7 @@ function PublishAdModal({ data }: Props) {
                         id="yearsOfPlaying"
                         className={`bg-zinc-900 p-3 text-zinc-500 rounded-md  `}
                         placeholder="Tudo bem ser ZERO"
+                        type={"number"}
                         value={yearsOfPlaying}
                         onChange={(e) =>
                            setYearsOfPlaying(Number(e.target.value))
@@ -91,7 +105,7 @@ function PublishAdModal({ data }: Props) {
                      <input
                         id="yearsOfPlaying"
                         className="bg-zinc-900 p-3 text-zinc-500 rounded-md"
-                        placeholder="Tudo bem ser ZERO"
+                        placeholder="Qual seu discord?"
                         value={discordUsername}
                         onChange={(e) => setDiscordUsername(e.target.value)}
                      />
@@ -174,12 +188,20 @@ function PublishAdModal({ data }: Props) {
                            type="number"
                            max={24}
                            min={0}
+                           value={startHour}
+                           onChange={(ev) =>
+                              setStartHour(Number(ev.target.value))
+                           }
                         />
                         <input
-                           id="startHoursOfPlaying"
+                           id="endHoursOfPlaying"
                            type="number"
                            max={24}
                            min={0}
+                           value={endHour}
+                           onChange={(ev) =>
+                              setEndHour(Number(ev.target.value))
+                           }
                            className="bg-zinc-900 p-3 text-zinc-500 w-[50%] h-10 rounded-md"
                            placeholder="Até"
                         />
@@ -189,6 +211,8 @@ function PublishAdModal({ data }: Props) {
                <div className="flex items-center gap-2 font-normal text-[14px] ">
                   <input
                      type="checkbox"
+                     checked={usesVoiceChat}
+                     onChange={(ev) => setUsesVoiceChat(!usesVoiceChat)}
                      className="w-6 h-6 text-green bg-zinc-500 rounded-md"
                   />
                   <label>Costumo me conectar ao chat de voz</label>
